@@ -198,6 +198,225 @@
 
     <!-- Middle Row: Discord & Contact -->
     <div class="row">
+     <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* General Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .dark-theme {
+      background-color: #1a1a1a;
+      color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      flex: 1;
+      min-width: 250px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s, background-color 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .dark-theme .card {
+      background-color: #2b2b2b;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #666;
+      flex-grow: 1;
+    }
+
+    .dark-theme .card p {
+      color: #ccc;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.2s;
+    }
+
+    .card a:hover {
+      background-color: #0056b3;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s;
+      z-index: 100;
+    }
+
+    .theme-toggle:hover {
+      background-color: #0056b3;
+    }
+
+    /* Discord Presence Styles */
+    .discord-status {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      padding: 15px;
+      background-color: #fff7fb;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-top: 15px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .discord-avatar-container {
+      position: relative;
+      display: inline-block;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid #ffd1dc; /* Soft pink border */
+    }
+
+    .discord-avatar-container img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      border: 2px solid white;
+      transition: background-color 0.2s ease;
+    }
+
+    .discord-status span {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #ff4f5c; /* Soft Red */
+      letter-spacing: 1px;
+    }
+
+    .discord-status .activity {
+      font-style: italic;
+      color: #ff77a9; /* Soft Pink */
+      margin-top: 10px;
+    }
+
+    .discord-status:hover {
+      transform: scale(1.03);
+      background-color: #fff1f7; /* Lighter Pink */
+    }
+
+    .discord-status .activity {
+      color: #ff4f5c; /* Adjusted to match the status theme */
+    }
+
+    /* Status color updates */
+    .status-indicator.online { background-color: #3dbf7f; }
+    .status-indicator.idle { background-color: #ffcc00; }
+    .status-indicator.dnd { background-color: #ff4f5c; }
+    .status-indicator.offline { background-color: #b0b0b0; }
+
+    .contact-links a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: inherit;
+      font-weight: bold;
+    }
+
+    .contact-links a:hover {
+      color: #0056b3;
+    }
+
+    .contact-links i {
+      font-size: 1.2em;
+    }
+
+    @media(max-width: 768px) {
+      .row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark/Light</button>
+
+  <div class="container">
+
+    <!-- Top Row: Profile Card -->
+    <div class="row">
+      <div class="card profile-card">
+        <img src="https://cdn.discordapp.com/attachments/1437017654841049274/1439919647792173096/fce706a98f1409efbc766ab2c489b79f.png?ex=691c452c&is=691af3ac&hm=259b7f3f4932d000dae2508cd619a2bee79725250490110bf19a126d6b4078fa" alt="Profile Picture">
+        <h2>Your Name</h2>
+        <p>Short bio about yourself. Web developer, designer, and tech enthusiast.</p>
+      </div>
+    </div>
+
+    <!-- Middle Row: Discord & Contact -->
+    <div class="row">
       <div class="card">
         <h2>Discord Presence</h2>
         <p>Connected via Lanyard API:</p>
@@ -208,7 +427,7 @@
           </div>
           <span id="discord-username">Loading...</span>
         </div>
-        <div id="discord-activity" class="activity"></div>
+        <div id="discord-activity" class="activity">Loading...</div>
       </div>
       <div class="card">
         <h2>Contact Me</h2>
@@ -232,6 +451,117 @@
         </div>
       </div>
     </div>
+
+    <!-- Bottom Row: Work / Projects -->
+    <div class="row" id="projects-row">
+      <!-- Project cards will be inserted dynamically -->
+    </div>
+
+  </div>
+
+  <script>
+    // Dark/Light Theme Toggle
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+    }
+
+    // Discord presence via Lanyard API
+    const discordId = "1437013692440121414";
+    fetch(`https://api.lanyard.rest/v1/users/${discordId}`)
+      .then(response => response.json())
+      .then(data => {
+        const user = data.data;
+        const avatarUrl = `https://cdn.discordapp.com/avatars/${discordId}/${user.discord_user.avatar}.png?size=128`;
+        document.getElementById('discord-avatar').src = avatarUrl;
+        document.getElementById('discord-username').textContent = `${user.discord_user.username}#${user.discord_user.discriminator}`;
+
+        const statusIndicator = document.getElementById('discord-status');
+        switch(user.discord_status) {
+          case 'online': 
+            statusIndicator.style.backgroundColor = '#3dbf7f'; 
+            statusIndicator.classList.add('online');
+            break;
+          case 'idle': 
+            statusIndicator.style.backgroundColor = '#ffcc00'; 
+            statusIndicator.classList.add('idle');
+            break;
+          case 'dnd': 
+            statusIndicator.style.backgroundColor = '#ff4f5c'; 
+            statusIndicator.classList.add('dnd');
+            break;
+          default: 
+            statusIndicator.style.backgroundColor = '#b0b0b0'; 
+            statusIndicator.classList.add('offline');
+            break;
+        }
+
+        const activityDiv = document.getElementById('discord-activity');
+        if(user.activities && user.activities.length > 0) {
+          const mainActivity = user.activities.find(act => act.type !== 4);
+          if(mainActivity) {
+            activityDiv.textContent = `Currently ${mainActivity.type === 0 ? 'Playing' : mainActivity.type === 2 ? 'Streaming' : 'Doing'} ${mainActivity.name}`;
+          } else {
+            activityDiv.textContent = '';
+          }
+        } else {
+          activityDiv.textContent = '';
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching Discord info:', err);
+        document.getElementById('discord-username').textContent = 'Failed to load Discord info';
+        document.getElementById('discord-status').style.backgroundColor = 'gray';
+        document.getElementById('discord-activity').textContent = '';
+      });
+
+    // Dynamic Projects with placeholders
+    const projects = [
+      {
+        title: "Current Work",
+        description: "Working on a personal web development project using React and Node.js.",
+        github: "#",
+        live: "#"
+      },
+      {
+        title: "Other Project 1",
+        description: "Developed a Discord bot that tracks game stats for users.",
+        github: "#",
+        live: "#"
+      },
+      {
+        title: "Other Project 2",
+        description: "Built a responsive portfolio website with a card-based layout.",
+        github: "#",
+        live: "#"
+      },
+      {
+        title: "Other Project 3",
+        description: "Experimenting with AI-powered chatbots for Discord servers.",
+        github: "#",
+        live: "#"
+      }
+    ];
+
+    const projectsRow = document.getElementById('projects-row');
+
+    projects.forEach(project => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h2>${project.title}</h2>
+        <p>${project.description}</p>
+        <div style="margin-top: 10px;">
+          <a href="${project.github}" target="_blank">GitHub</a>
+          <a href="${project.live}" target="_blank">Live Demo</a>
+        </div>
+      `;
+      projectsRow.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>
+
 
     <!-- Bottom Row: Work / Projects -->
     <div class="row" id="projects-row">
