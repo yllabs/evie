@@ -94,22 +94,15 @@
     padding: 15px;
     border-radius: 12px;
     background: rgba(255,255,255,0.05);
-    transition: 0.3s ease;
-    cursor: pointer;
     text-align: center;
     color: #fff;
   }
 
   #aboutMeContent {
-    display:none;
     font-size: 0.9em;
     margin-top: 10px;
     line-height: 1.4em;
     color: #fff;
-  }
-
-  #aboutMe:hover #aboutMeContent {
-    display:block;
   }
 
 </style>
@@ -125,7 +118,6 @@
   <span id="statusIndicator"></span>
 
   <div id="aboutMe">
-    Hover to See About Me
     <div id="aboutMeContent">
       Hello! I'm Evie, a passionate developer, designer, and artist who loves creating music, games, and digital experiences.
     </div>
@@ -194,39 +186,22 @@ window.addEventListener("resize",()=>{
     canvas.height = window.innerHeight;
 });
 
-// === Typing Effect ===
+// === Typing Effect (Once) ===
 const roles = ["Developer","Designer","Artist","Creator","Music Lover","Gamer","Editor","Programmer"];
 let usernameEl = document.getElementById("username");
 let currentRole = 0;
 let charIndex = 0;
 let typingDelay = 100;
-let erasingDelay = 50;
-let newWordDelay = 1500;
 
 let dynamicStatus = null; // Discord status from Lanyard
 
-function type() {
+function typeOnce(){
     let word = dynamicStatus || roles[currentRole];
     let text = `Evie | ${word}`;
     if(charIndex < text.length){
         usernameEl.textContent += text.charAt(charIndex);
         charIndex++;
-        setTimeout(type, typingDelay);
-    } else {
-        setTimeout(erase, newWordDelay);
-    }
-}
-
-function erase(){
-    if(charIndex > 0){
-        usernameEl.textContent = usernameEl.textContent.slice(0,-1);
-        charIndex--;
-        setTimeout(erase, erasingDelay);
-    } else {
-        if(!dynamicStatus){
-            currentRole = (currentRole + 1) % roles.length;
-        }
-        setTimeout(type, typingDelay);
+        setTimeout(typeOnce, typingDelay);
     }
 }
 
@@ -251,25 +226,21 @@ function connectLanyard(){
                     const data = payload.d;
                     const u = data.discord_user;
                     avatarEl.src = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`;
-                    // Status colors
                     const statusColors = {online:"#43b581",idle:"#faa61a",dnd:"#f04747",offline:"#747f8d"};
                     statusEl.style.background = statusColors[data.discord_status]??statusColors.offline;
-                    dynamicStatus = data.discord_status.charAt(0).toUpperCase() + data.discord_status.slice(1); // capitalize
+                    dynamicStatus = data.discord_status.charAt(0).toUpperCase() + data.discord_status.slice(1);
                     document.getElementById("loadingScreen").style.display="none"; // hide loading
+                    // Start typing after Lanyard status is loaded
+                    typeOnce();
                 }
                 break;
         }
     };
     ws.onerror = err=>console.error("Lanyard WS error",err);
-    ws.onclose = ()=>{ console.log("WS closed, reconnecting in 5s"); clearInterval(heartbeat); setTimeout(connectLanyard,5000);}
+    ws.onclose = ()=>{ clearInterval(heartbeat); setTimeout(connectLanyard,5000);}
 }
 
 connectLanyard();
-
-// Start typing
-document.addEventListener("DOMContentLoaded",()=>{
-    setTimeout(type,500);
-});
 </script>
 
 </body>
