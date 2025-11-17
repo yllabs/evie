@@ -119,9 +119,8 @@
       background-color: #fff7fb;
       border-radius: 15px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin-top: 15px;
       width: 300px;
-      height: 300px; /* Fixed height */
+      height: 400px; /* Fixed height for Discord status card */
     }
 
     .discord-avatar-container {
@@ -133,8 +132,8 @@
     }
 
     .discord-avatar-container img {
-      width: 60px;
-      height: 60px;
+      width: 80px; /* Adjusted size */
+      height: 80px;
       object-fit: cover;
       border-radius: 50%;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -152,7 +151,7 @@
     }
 
     .discord-status span {
-      font-size: 1.1em;
+      font-size: 1.2em;
       font-weight: bold;
       color: #ff4f5c; /* Soft Red */
       letter-spacing: 1px;
@@ -196,6 +195,11 @@
       .row {
         flex-direction: column;
       }
+
+      /* Ensuring Discord Presence stays above bottom row on mobile */
+      .discord-card {
+        order: -1; /* Moves Discord card to top in mobile layout */
+      }
     }
   </style>
 </head>
@@ -214,7 +218,7 @@
       </div>
     </div>
 
-    <!-- Middle Row: Discord & Contact -->
+    <!-- Middle Row: Discord Presence & Contact -->
     <div class="row">
       <div class="card discord-card">
         <h2>Discord Presence</h2>
