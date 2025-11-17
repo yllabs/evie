@@ -67,6 +67,7 @@
     line-height:1.4;
     position: relative;
     cursor:pointer;
+    transition: all 0.3s ease;
   }
 
   #cycleText {
@@ -78,6 +79,17 @@
   }
 
   #aboutMe:hover #cycleText { opacity:0; }
+
+  #aboutMe:hover {
+    text-shadow:
+      0 0 5px #ff00ff,
+      0 0 10px #ff00ff,
+      0 0 15px #00ffff,
+      0 0 20px #00ffff,
+      0 0 25px #ffff00,
+      0 0 30px #ffff00;
+    color: #fff;
+  }
 
   .social-link {
     margin:0 8px;
