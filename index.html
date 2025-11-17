@@ -4,59 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enqvy Discord Presence</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
-    /* Basic reset */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: 'Arial', sans-serif;
       height: 100vh;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       background: linear-gradient(135deg, var(--accent-1,#ff006e), var(--accent-2,#00f5ff), var(--accent-3,#ffd60a));
       transition: background 0.5s ease;
+      overflow: hidden;
     }
-    #orbsContainer.visible {
-      opacity: 1;
-    }
-    #orbsContainer {
+
+    /* Floating animated glow behind the window */
+    .glow-orb {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      filter: blur(85px);
+      opacity: 0.5;
       pointer-events: none;
-      opacity: 0;
-      transition: opacity 1s ease;
+      animation: floatGlow 12s infinite ease-in-out;
     }
-    .bg-image {
-      position: fixed;
-      top:0; left:0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 1s ease;
+
+    @keyframes floatGlow {
+      0%   { transform: translate(-40px, -30px) scale(1); }
+      50%  { transform: translate(40px, 50px) scale(1.25); }
+      100% { transform: translate(-40px, -30px) scale(1); }
     }
-    .bg-image.loaded {
-      opacity: 1;
-    }
-    #profile {
-      text-align: center;
-      color: #fff;
+
+    /* MAIN GLASS WINDOW */
+    #windowWrapper {
+      padding: 35px 45px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
       z-index: 2;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+      opacity: 0;
+      animation: fadeIn 1.1s ease forwards;
     }
+
+    /* Subtle breathing animation for the glass */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes glassPulse {
+      0% { background: rgba(255, 255, 255, 0.12); }
+      50% { background: rgba(255, 255, 255, 0.18); }
+      100% { background: rgba(255, 255, 255, 0.12); }
+    }
+
+    #windowWrapper {
+      animation: fadeIn 1.1s ease forwards, glassPulse 8s infinite ease-in-out;
+    }
+
+    /* PROFILE STYLE */
+    #profile { text-align: center; color: #fff; z-index: 3; }
+
     #avatar {
       width: 128px;
       height: 128px;
       border-radius: 50%;
       border: 3px solid #fff;
       margin-bottom: 10px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.4);
     }
+
     #statusIndicator {
       width: 16px;
       height: 16px;
@@ -65,76 +93,38 @@
       margin-left: 8px;
       vertical-align: middle;
       border: 2px solid #fff;
+      box-shadow: 0 0 10px rgba(255,255,255,0.6);
     }
+
     #customStatus {
-      font-style: italic;
       margin-top: 5px;
+      font-style: italic;
+      opacity: 0.85;
     }
-    #socials {
-      margin-top: 15px;
-    }
-    .social-link {
-      margin: 0 8px;
-      color: #fff;
-      font-size: 24px;
-      transition: transform 0.2s;
-    }
-    .social-link:hover {
-      transform: scale(1.2);
-    }
-    #spotifyCard {
-      margin-top: 20px;
-      display: flex;
-      align-items: center;
-      background: rgba(255,255,255,0.1);
-      padding: 10px;
-      border-radius: 12px;
-      transition: background 0.5s ease;
-    }
-    #spotifyAlbum {
-      width: 64px;
-      height: 64px;
-      border-radius: 8px;
-      margin-right: 10px;
-    }
-    #spotifyInfo {
-      text-align: left;
-    }
-    #spotifyTitle { font-weight: bold; }
-    #spotifyArtist { font-size: 0.9em; opacity: 0.8; }
+
   </style>
 </head>
 <body>
-  <div id="orbsContainer"></div>
 
-  <div id="profile">
-    <img id="avatar" src="" alt="Avatar">
-    <h2 id="username">Loading...</h2>
-    <span id="statusIndicator"></span>
-    <div id="customStatus"></div>
+  <!-- Animated glowing background elements -->
+  <div class="glow-orb" id="glow1"></div>
+  <div class="glow-orb" id="glow2" style="animation-delay: -4s;"></div>
+  <div class="glow-orb" id="glow3" style="animation-delay: -7s;"></div>
 
-    <div id="socials"></div>
-
-    <div id="spotifyCard" class="hidden">
-      <img id="spotifyAlbum" src="" alt="Album">
-      <div id="spotifyInfo">
-        <div id="spotifyTitle"></div>
-        <div id="spotifyArtist"></div>
-      </div>
+  <!-- Glass Window -->
+  <div id="windowWrapper">
+    <div id="profile">
+      <img id="avatar" src="" alt="Avatar">
+      <h2 id="username">Loading...</h2>
+      <span id="statusIndicator"></span>
+      <div id="customStatus"></div>
     </div>
   </div>
 
   <script>
     const CONFIG = {
       discordUserId: "1437013692440121414",
-      backgroundImage: "https://files.catbox.moe/265m5g.avif",
-      socials: {
-        github: { url: "https://github.com/Enqvy", icon: "fab fa-github" },
-        spotify: { url: "https://open.spotify.com/user/315elchwqzfzyfhvanpygkvrfqcq", icon: "fab fa-spotify" },
-        steam: { url: "https://steamcommunity.com/id/enqvy/", icon: "fab fa-steam" },
-        youtube: { url: "https://youtube.com/@enqvy", icon: "fab fa-youtube" },
-        discord: { url: `https://discord.com/users/1437013692440121414`, icon: "fab fa-discord" }
-      }
+      backgroundImage: "https://files.catbox.moe/265m5g.avif"
     };
 
     function extractColors(imageUrl) {
@@ -145,23 +135,33 @@
         img.onload = () => {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
+
           canvas.width = 50;
           canvas.height = 50;
           ctx.drawImage(img, 0, 0, 50, 50);
+
           const data = ctx.getImageData(0, 0, 50, 50).data;
+
           let r=0,g=0,b=0,count=0;
-          for(let i=0;i<data.length;i+=4){r+=data[i];g+=data[i+1];b+=data[i+2];count++;}
-          r=Math.floor(r/count);g=Math.floor(g/count);b=Math.floor(b/count);
-          resolve({ color1:`rgb(${r},${g},${b})`, color2:`rgb(${b},${r},${g})`, color3:`rgb(${g},${b},${r})` });
+          for(let i=0;i<data.length;i+=4){
+            r+=data[i];
+            g+=data[i+1];
+            b+=data[i+2];
+            count++;
+          }
+
+          r = Math.floor(r/count);
+          g = Math.floor(g/count);
+          b = Math.floor(b/count);
+
+          resolve({
+            color1:`rgb(${r},${g},${b})`,
+            color2:`rgb(${b},${r},${g})`,
+            color3:`rgb(${g},${b},${r})`
+          });
         };
         img.onerror = () => reject("Failed to load image");
       });
-    }
-
-    let bgLoaded=false, colorsExtracted=false;
-
-    function showOrbs() {
-      if(bgLoaded && colorsExtracted) document.getElementById("orbsContainer").classList.add("visible");
     }
 
     async function updateTheme(imageUrl) {
@@ -170,74 +170,68 @@
         document.documentElement.style.setProperty("--accent-1", cols.color1);
         document.documentElement.style.setProperty("--accent-2", cols.color2);
         document.documentElement.style.setProperty("--accent-3", cols.color3);
-        colorsExtracted=true; showOrbs();
+
+        // Make glowing orbs match theme
+        document.getElementById("glow1").style.background = cols.color1;
+        document.getElementById("glow2").style.background = cols.color2;
+        document.getElementById("glow3").style.background = cols.color3;
+
       } catch(e) {
         console.error(e);
-        document.documentElement.style.setProperty("--accent-1","#ff006e");
-        document.documentElement.style.setProperty("--accent-2","#00f5ff");
-        document.documentElement.style.setProperty("--accent-3","#ffd60a");
-        colorsExtracted=true; showOrbs();
       }
     }
 
-    if(CONFIG.backgroundImage){
-      const bgDiv=document.createElement("div");
-      bgDiv.className="bg-image";
-      bgDiv.style.backgroundImage=`url('${CONFIG.backgroundImage}')`;
-      document.body.insertBefore(bgDiv, document.body.firstChild);
-      const tImg=new Image();
-      tImg.onload=()=>{bgLoaded=true; bgDiv.classList.add("loaded"); updateTheme(CONFIG.backgroundImage);}
-      tImg.onerror=()=>{bgLoaded=true; bgDiv.classList.add("loaded"); updateTheme(CONFIG.backgroundImage);}
-      tImg.src=CONFIG.backgroundImage;
-    } else { bgLoaded=true; colorsExtracted=true; showOrbs(); }
-
-    const socialsContainer=document.getElementById("socials");
-    Object.entries(CONFIG.socials).forEach(([key,obj])=>{
-      if(obj.url){
-        const a=document.createElement("a");
-        a.href=obj.url; a.target="_blank"; a.className="social-link"; a.innerHTML=`<i class="${obj.icon}"></i>`;
-        socialsContainer.appendChild(a);
-      }
-    });
+    // Theme from background
+    updateTheme(CONFIG.backgroundImage);
 
     function connectLanyard(){
-      const ws=new WebSocket("wss://api.lanyard.rest/socket");
+      const ws = new WebSocket("wss://api.lanyard.rest/socket");
       let heartbeat;
-      ws.onopen=()=>console.log("Lanyard WS connected");
-      ws.onmessage=async msg=>{
-        const payload=JSON.parse(msg.data);
-        switch(payload.op){
+
+      ws.onmessage = async event => {
+        const payload = JSON.parse(event.data);
+
+        switch (payload.op) {
           case 1:
-            heartbeat=setInterval(()=>ws.send(JSON.stringify({op:3})),payload.d.heartbeat_interval);
-            ws.send(JSON.stringify({op:2,d:{subscribe_to_id:CONFIG.discordUserId}}));
+            heartbeat = setInterval(() => ws.send(JSON.stringify({ op: 3 })), payload.d.heartbeat_interval);
+            ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: CONFIG.discordUserId }}));
             break;
+
           case 0:
-            if(payload.t==="INIT_STATE"||payload.t==="PRESENCE_UPDATE"){
-              const data=payload.d; const u=data.discord_user; const status=data.discord_status;
-              const activities=data.activities; const spotify=data.spotify;
-              document.getElementById("username").textContent=u.username;
-              document.getElementById("avatar").src=`https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`;
-              const statusEl=document.getElementById("statusIndicator");
-              const statusColours={online:"#43b581",idle:"#faa61a",dnd:"#f04747",offline:"#747f8d"};
-              statusEl.style.background=statusColours[status]??statusColours.offline;
-              const customActivity=activities.find(a=>a.type===4);
-              document.getElementById("customStatus").textContent=customActivity?.state||"";
-              if(spotify){
-                document.getElementById("spotifyCard").classList.remove("hidden");
-                document.getElementById("spotifyAlbum").src=spotify.album_art_url;
-                document.getElementById("spotifyTitle").textContent=spotify.song;
-                document.getElementById("spotifyArtist").textContent=spotify.artist;
-                await updateTheme(spotify.album_art_url);
-              } else {
-                document.getElementById("spotifyCard").classList.add("hidden");
-                await updateTheme(`https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`);
-              }
+            if (payload.t === "INIT_STATE" || payload.t === "PRESENCE_UPDATE") {
+              const data = payload.d;
+              const u = data.discord_user;
+              const status = data.discord_status;
+              const activities = data.activities;
+
+              document.getElementById("username").textContent = u.username;
+              document.getElementById("avatar").src =
+                `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`;
+
+              const statusColours = {
+                online:"#43b581",
+                idle:"#faa61a",
+                dnd:"#f04747",
+                offline:"#747f8d"
+              };
+
+              document.getElementById("statusIndicator").style.background =
+                statusColours[status] ?? statusColours.offline;
+
+              const custom = activities.find(a => a.type === 4);
+              document.getElementById("customStatus").textContent = custom?.state || "";
+
+              // Theme updates based on avatar
+              await updateTheme(`https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`);
             }
             break;
         }
       };
-      ws.onerror=err=>console.error("Lanyard WS error",err);
-      ws.onclose=()=>{ console.log("WS closed — reconnecting in 5s"); clearInterval(heartbeat); setTimeout(connectLanyard,5000);}
+
+      ws.onclose = () => {
+        clearInterval(heartbeat);
+        setTimeout(connectLanyard, 5000);
+      };
     }
 
     connectLanyard();
