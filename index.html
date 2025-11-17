@@ -46,6 +46,9 @@
       min-width: 250px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       transition: transform 0.2s, background-color 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .dark-theme .card {
@@ -74,6 +77,7 @@
 
     .card p {
       color: #666;
+      flex-grow: 1;
     }
 
     .dark-theme .card p {
@@ -106,12 +110,14 @@
       border: none;
       border-radius: 5px;
       transition: background-color 0.2s;
+      z-index: 100;
     }
 
     .theme-toggle:hover {
       background-color: #0056b3;
     }
 
+    /* Discord presence */
     .discord-status {
       display: flex;
       align-items: center;
@@ -123,6 +129,17 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      position: relative;
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      border: 2px solid white;
     }
 
     .discord-status span {
@@ -157,7 +174,10 @@
         <h2>Discord Presence</h2>
         <p>Connected via Lanyard API:</p>
         <div id="discord" class="discord-status">
-          <img src="" alt="Discord Avatar" id="discord-avatar">
+          <div style="position: relative;">
+            <img src="" alt="Discord Avatar" id="discord-avatar">
+            <div class="status-indicator" id="discord-status"></div>
+          </div>
           <span id="discord-username">Loading...</span>
         </div>
       </div>
@@ -189,27 +209,48 @@
         const user = data.data;
         document.getElementById('discord-avatar').src = `https://cdn.discordapp.com/avatars/${discordId}/${user.discord_user.avatar}.png?size=128`;
         document.getElementById('discord-username').textContent = `${user.discord_user.username}#${user.discord_user.discriminator}`;
+
+        // Status color
+        const statusIndicator = document.getElementById('discord-status');
+        switch(user.discord_status) {
+          case 'online': statusIndicator.style.backgroundColor = 'green'; break;
+          case 'idle': statusIndicator.style.backgroundColor = 'orange'; break;
+          case 'dnd': statusIndicator.style.backgroundColor = 'red'; break;
+          default: statusIndicator.style.backgroundColor = 'gray'; break;
+        }
       })
       .catch(err => {
         console.error('Error fetching Discord info:', err);
         document.getElementById('discord-username').textContent = 'Failed to load Discord info';
+        document.getElementById('discord-status').style.backgroundColor = 'gray';
       });
 
-    // Dynamic Projects
+    // Dynamic Projects with placeholders
     const projects = [
       {
         title: "Current Work",
-        description: "Working on a personal web development project using React and Node.js."
+        description: "Working on a personal web development project using React and Node.js.",
+        github: "#",
+        live: "#"
       },
       {
         title: "Other Project 1",
-        description: "Developed a Discord bot that tracks game stats for users."
+        description: "Developed a Discord bot that tracks game stats for users.",
+        github: "#",
+        live: "#"
       },
       {
         title: "Other Project 2",
-        description: "Built a responsive portfolio website with a card-based layout."
+        description: "Built a responsive portfolio website with a card-based layout.",
+        github: "#",
+        live: "#"
       },
-      // Add more projects here easily
+      {
+        title: "Other Project 3",
+        description: "Experimenting with AI-powered chatbots for Discord servers.",
+        github: "#",
+        live: "#"
+      }
     ];
 
     const projectsRow = document.getElementById('projects-row');
@@ -217,7 +258,14 @@
     projects.forEach(project => {
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<h2>${project.title}</h2><p>${project.description}</p>`;
+      card.innerHTML = `
+        <h2>${project.title}</h2>
+        <p>${project.description}</p>
+        <div style="margin-top: 10px;">
+          <a href="${project.github}" target="_blank">GitHub</a>
+          <a href="${project.live}" target="_blank">Live Demo</a>
+        </div>
+      `;
       projectsRow.appendChild(card);
     });
   </script>
