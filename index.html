@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Portfolio</title>
+  <title>Evie 💖</title>
   <style>
     * {
       box-sizing: border-box;
@@ -172,7 +172,7 @@
     <!-- Top Row: Profile Card -->
     <div class="row">
       <div class="card profile-card">
-        <img src="your-pfp.jpg" alt="Profile Picture">
+        <img src="https://cdn.discordapp.com/attachments/1437017654841049274/1439919647792173096/fce706a98f1409efbc766ab2c489b79f.png?ex=691c452c&is=691af3ac&hm=259b7f3f4932d000dae2508cd619a2bee79725250490110bf19a126d6b4078fa" alt="Profile Picture">
         <h2>Your Name</h2>
         <p>Short bio about yourself. Web developer, designer, and tech enthusiast.</p>
       </div>
@@ -207,6 +207,11 @@
   </div>
 
   <script>
+    // Auto Dark Mode based on system preference
+    if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark-theme');
+    }
+
     // Dark/Light Theme Toggle
     function toggleTheme() {
       document.body.classList.toggle('dark-theme');
@@ -222,7 +227,6 @@
         document.getElementById('discord-avatar').src = avatarUrl;
         document.getElementById('discord-username').textContent = `${user.discord_user.username}#${user.discord_user.discriminator}`;
 
-        // Status color
         const statusIndicator = document.getElementById('discord-status');
         switch(user.discord_status) {
           case 'online': statusIndicator.style.backgroundColor = 'green'; break;
@@ -231,10 +235,9 @@
           default: statusIndicator.style.backgroundColor = 'gray'; break;
         }
 
-        // Show current activity if any
         const activityDiv = document.getElementById('discord-activity');
         if(user.activities && user.activities.length > 0) {
-          const mainActivity = user.activities.find(act => act.type !== 4); // ignore custom status
+          const mainActivity = user.activities.find(act => act.type !== 4);
           if(mainActivity) {
             activityDiv.textContent = `Currently ${mainActivity.type === 0 ? 'Playing' : mainActivity.type === 2 ? 'Streaming' : 'Doing'} ${mainActivity.name}`;
           } else {
@@ -251,36 +254,15 @@
         document.getElementById('discord-activity').textContent = '';
       });
 
-    // Dynamic Projects with placeholders
+    // Dynamic Projects
     const projects = [
-      {
-        title: "Current Work",
-        description: "Working on a personal web development project using React and Node.js.",
-        github: "#",
-        live: "#"
-      },
-      {
-        title: "Other Project 1",
-        description: "Developed a Discord bot that tracks game stats for users.",
-        github: "#",
-        live: "#"
-      },
-      {
-        title: "Other Project 2",
-        description: "Built a responsive portfolio website with a card-based layout.",
-        github: "#",
-        live: "#"
-      },
-      {
-        title: "Other Project 3",
-        description: "Experimenting with AI-powered chatbots for Discord servers.",
-        github: "#",
-        live: "#"
-      }
+      { title: "Current Work", description: "Working on a personal web development project using React and Node.js.", github: "#", live: "#" },
+      { title: "Other Project 1", description: "Developed a Discord bot that tracks game stats for users.", github: "#", live: "#" },
+      { title: "Other Project 2", description: "Built a responsive portfolio website with a card-based layout.", github: "#", live: "#" },
+      { title: "Other Project 3", description: "Experimenting with AI-powered chatbots for Discord servers.", github: "#", live: "#" }
     ];
 
     const projectsRow = document.getElementById('projects-row');
-
     projects.forEach(project => {
       const card = document.createElement('div');
       card.className = 'card';
