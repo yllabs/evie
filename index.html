@@ -19,7 +19,6 @@
       overflow: hidden;
     }
 
-    /* Floating animated glow behind the window */
     .glow-orb {
       position: absolute;
       width: 350px;
@@ -37,7 +36,6 @@
       100% { transform: translate(-40px, -30px) scale(1); }
     }
 
-    /* MAIN GLASS WINDOW */
     #windowWrapper {
       padding: 35px 45px;
       border-radius: 22px;
@@ -54,10 +52,9 @@
       flex-direction: column;
 
       opacity: 0;
-      animation: fadeIn 1.1s ease forwards;
+      animation: fadeIn 1.1s ease forwards, glassPulse 8s infinite ease-in-out;
     }
 
-    /* Subtle breathing animation for the glass */
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.94); }
       to { opacity: 1; transform: scale(1); }
@@ -69,11 +66,6 @@
       100% { background: rgba(255, 255, 255, 0.12); }
     }
 
-    #windowWrapper {
-      animation: fadeIn 1.1s ease forwards, glassPulse 8s infinite ease-in-out;
-    }
-
-    /* PROFILE STYLE */
     #profile { text-align: center; color: #fff; z-index: 3; }
 
     #avatar {
@@ -102,16 +94,29 @@
       opacity: 0.85;
     }
 
+    .bg-image {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .bg-image.loaded {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Animated glowing background elements -->
   <div class="glow-orb" id="glow1"></div>
   <div class="glow-orb" id="glow2" style="animation-delay: -4s;"></div>
   <div class="glow-orb" id="glow3" style="animation-delay: -7s;"></div>
 
-  <!-- Glass Window -->
   <div id="windowWrapper">
     <div id="profile">
       <img id="avatar" src="" alt="Avatar">
@@ -124,9 +129,20 @@
   <script>
     const CONFIG = {
       discordUserId: "1437013692440121414",
-      backgroundImage: "https://files.catbox.moe/265m5g.avif"
+      backgroundImage: "https://cdn.discordapp.com/attachments/1435190777868324949/1436077761365278772/background_1079_687080c6b2e8b6.03818783.png?ex=691c22e3&is=691ad163&hm=35b7c1c381b9b21770d5976cbe3d222e38941170da10307b333eee7c9c93a408"
     };
 
+    /* BACKGROUND LOADING */
+    const bgDiv = document.createElement("div");
+    bgDiv.className = "bg-image";
+    bgDiv.style.backgroundImage = `url('${CONFIG.backgroundImage}')`;
+    document.body.appendChild(bgDiv);
+
+    const bgImg = new Image();
+    bgImg.onload = () => bgDiv.classList.add("loaded");
+    bgImg.src = CONFIG.backgroundImage;
+
+    /* COLOR EXTRACTION + THEME UPDATES */
     function extractColors(imageUrl) {
       return new Promise((resolve, reject) => {
         const img = new Image();
@@ -135,14 +151,13 @@
         img.onload = () => {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-
           canvas.width = 50;
           canvas.height = 50;
           ctx.drawImage(img, 0, 0, 50, 50);
 
           const data = ctx.getImageData(0, 0, 50, 50).data;
-
           let r=0,g=0,b=0,count=0;
+
           for(let i=0;i<data.length;i+=4){
             r+=data[i];
             g+=data[i+1];
@@ -160,30 +175,27 @@
             color3:`rgb(${g},${b},${r})`
           });
         };
-        img.onerror = () => reject("Failed to load image");
+        img.onerror = reject;
       });
     }
 
     async function updateTheme(imageUrl) {
       try {
-        const cols = await extractColors(imageUrl);
-        document.documentElement.style.setProperty("--accent-1", cols.color1);
-        document.documentElement.style.setProperty("--accent-2", cols.color2);
-        document.documentElement.style.setProperty("--accent-3", cols.color3);
+        const c = await extractColors(imageUrl);
+        document.documentElement.style.setProperty("--accent-1", c.color1);
+        document.documentElement.style.setProperty("--accent-2", c.color2);
+        document.documentElement.style.setProperty("--accent-3", c.color3);
 
-        // Make glowing orbs match theme
-        document.getElementById("glow1").style.background = cols.color1;
-        document.getElementById("glow2").style.background = cols.color2;
-        document.getElementById("glow3").style.background = cols.color3;
+        document.getElementById("glow1").style.background = c.color1;
+        document.getElementById("glow2").style.background = c.color2;
+        document.getElementById("glow3").style.background = c.color3;
 
-      } catch(e) {
-        console.error(e);
-      }
+      } catch (e) {}
     }
 
-    // Theme from background
     updateTheme(CONFIG.backgroundImage);
 
+    /* LANYARD CONNECTION */
     function connectLanyard(){
       const ws = new WebSocket("wss://api.lanyard.rest/socket");
       let heartbeat;
@@ -199,10 +211,10 @@
 
           case 0:
             if (payload.t === "INIT_STATE" || payload.t === "PRESENCE_UPDATE") {
-              const data = payload.d;
-              const u = data.discord_user;
-              const status = data.discord_status;
-              const activities = data.activities;
+              const data    = payload.d;
+              const u       = data.discord_user;
+              const status  = data.discord_status;
+              const acts    = data.activities;
 
               document.getElementById("username").textContent = u.username;
               document.getElementById("avatar").src =
@@ -218,10 +230,9 @@
               document.getElementById("statusIndicator").style.background =
                 statusColours[status] ?? statusColours.offline;
 
-              const custom = activities.find(a => a.type === 4);
+              const custom = acts.find(a => a.type === 4);
               document.getElementById("customStatus").textContent = custom?.state || "";
 
-              // Theme updates based on avatar
               await updateTheme(`https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`);
             }
             break;
