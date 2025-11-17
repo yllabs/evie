@@ -17,6 +17,28 @@
     overflow: hidden;
   }
 
+  #loadingScreen {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:2rem;
+    font-weight:bold;
+    background:linear-gradient(90deg,#ff0000,#ff7f00,#ffff00,#00ff00,#0000ff,#4b0082,#8f00ff);
+    background-size: 600% 600%;
+    animation: rainbow 3s linear infinite;
+    color:#fff;
+    z-index:9999;
+  }
+
+  @keyframes rainbow {
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+
   #orbsContainer {
     position: absolute;
     width:100%;
@@ -40,7 +62,7 @@
   }
 
   #profile:hover {
-    box-shadow: 0 0 40px #ff00ff, 0 0 80px #00ffff, 0 0 120px #ffff00;
+    animation: neonGlow 2s infinite alternate;
   }
 
   #avatar {
@@ -81,30 +103,21 @@
   #aboutMe:hover #cycleText { opacity:0; }
 
   #aboutMe:hover {
-    text-shadow:
-      0 0 5px #ff00ff,
-      0 0 10px #ff00ff,
-      0 0 15px #00ffff,
-      0 0 20px #00ffff,
-      0 0 25px #ffff00,
-      0 0 30px #ffff00;
+    animation: neonGlow 2s infinite alternate;
     color: #fff;
   }
 
-  .social-link {
-    margin:0 8px;
-    color:#fff;
-    font-size:24px;
-    transition: all 0.2s ease;
-  }
-
-  .social-link:hover {
-    text-shadow:0 0 10px #ff00ff,0 0 20px #00ffff,0 0 30px #ffff00;
-    transform: scale(1.2);
+  @keyframes neonGlow {
+    0%{text-shadow:0 0 5px #ff00ff,0 0 10px #ff00ff,0 0 15px #00ffff,0 0 20px #00ffff,0 0 25px #ffff00,0 0 30px #ffff00;}
+    25%{text-shadow:0 0 10px #ff7f00,0 0 20px #ff7f00,0 0 30px #00ff7f,0 0 40px #00ff7f,0 0 50px #7f00ff,0 0 60px #7f00ff;}
+    50%{text-shadow:0 0 15px #ff0000,0 0 25px #ff0000,0 0 35px #00ffff,0 0 45px #00ffff,0 0 55px #ffff00,0 0 65px #ffff00;}
+    75%{text-shadow:0 0 20px #ff00ff,0 0 30px #ff00ff,0 0 40px #00ffff,0 0 50px #00ffff,0 0 60px #ffff00,0 0 70px #ffff00;}
+    100%{text-shadow:0 0 25px #ff7f00,0 0 35px #ff7f00,0 0 45px #00ff7f,0 0 55px #00ff7f,0 0 65px #7f00ff,0 0 75px #7f00ff;}
   }
 </style>
 </head>
 <body>
+<div id="loadingScreen">Loading Evie...</div>
 <canvas id="orbsContainer"></canvas>
 
 <div id="profile">
@@ -119,13 +132,17 @@
 </div>
 
 <script>
+  // Hide loading screen after Lanyard connects
+  function hideLoadingScreen(){ 
+    document.getElementById("loadingScreen").style.transition="opacity 0.5s"; 
+    document.getElementById("loadingScreen").style.opacity=0;
+    setTimeout(()=>document.getElementById("loadingScreen").remove(),500);
+  }
+
   // Tab title cycling
   const tabWords = ["evie","evie | developer","evie | designer","evie | artist","evie | gamer","evie | music lover","evie | programmer"];
   let tIndex = 0;
-  setInterval(()=> {
-    document.title = tabWords[tIndex];
-    tIndex = (tIndex+1)%tabWords.length;
-  },2000);
+  setInterval(()=> { document.title = tabWords[tIndex]; tIndex = (tIndex+1)%tabWords.length; },2000);
 
   // About me role cycling
   const roles = ["developer","designer","artist","creator","music lover","gamer","editor","programmer"];
@@ -143,13 +160,7 @@
 
   const particles=[];
   for(let i=0;i<100;i++){
-    particles.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      radius:Math.random()*3+1,
-      dx:(Math.random()-0.5)*0.5,
-      dy:(Math.random()-0.5)*0.5
-    });
+    particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*3+1,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5});
   }
 
   function animate(){
@@ -158,9 +169,7 @@
       ctx.beginPath();
       ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
       ctx.fillStyle="rgba(255,255,255,0.6)";
-      ctx.shadowBlur=10;
-      ctx.shadowColor="#ff00ff";
-      ctx.fill();
+      ctx.shadowBlur=10; ctx.shadowColor="#ff00ff"; ctx.fill();
       p.x+=p.dx; p.y+=p.dy;
       if(p.x<0||p.x>canvas.width) p.dx*=-1;
       if(p.y<0||p.y>canvas.height) p.dy*=-1;
@@ -168,7 +177,6 @@
     requestAnimationFrame(animate);
   }
   animate();
-
   window.addEventListener("resize",()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
 
   // Lanyard WebSocket for Discord Presence
@@ -192,20 +200,19 @@
             const status = data.discord_status;
             const activities = data.activities;
 
-            // Avatar & username
             document.getElementById("avatar").src = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`;
             document.getElementById("username").textContent = u.username;
 
-            // Status indicator
             const statusEl = document.getElementById("statusIndicator");
             const statusColors={online:"#43b581",idle:"#faa61a",dnd:"#f04747",offline:"#747f8d"};
             statusEl.style.background = statusColors[status]||statusColors.offline;
 
-            // Optional: override About Me with custom status
             const customActivity = activities.find(a=>a.type===4);
             if(customActivity){
               document.getElementById("aboutMe").firstChild.textContent = customActivity.state + " ";
             }
+
+            hideLoadingScreen(); // Hide loading once data received
           }
           break;
       }
