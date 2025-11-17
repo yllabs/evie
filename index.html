@@ -3,50 +3,207 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Cards</title>
+  <title>My Portfolio</title>
   <style>
-    body {
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 40px 20px;
-      background: #0f0f0f;
-      font-family: system-ui, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      color: white;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
     }
 
-    /* Styling for Cards and Status */
-    /* Add your card styles here */
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .dark-theme {
+      background-color: #1a1a1a;
+      color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      flex: 1;
+      min-width: 250px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .dark-theme .card {
+      background-color: #2b2b2b;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .profile-card {
+      text-align: center;
+    }
+
+    .profile-card img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      object-fit: cover;
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #666;
+    }
+
+    .dark-theme .card p {
+      color: #ccc;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.2s;
+    }
+
+    .card a:hover {
+      background-color: #0056b3;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background-color: #0056b3;
+    }
+
+    /* Discord presence styles */
+    .discord-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .discord-status img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .discord-status span {
+      font-weight: bold;
+    }
+
+    @media(max-width: 768px) {
+      .row {
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 <body>
 
-<!-- Top Card -->
-<div class="top-card">
-  <img id="profile-image" src="https://cdn.discordapp.com/avatars/1437013692440121414/youravatarhash.png?size=512" alt="Avatar">
-  <div id="discord-name">Your Name</div>
-  <div id="discord-status">Loading status...</div>
-</div>
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark/Light</button>
 
-<script>
-  // Fetch Discord status from your Render backend
-  fetch('https://my-backend.onrender.com/api/discord-status')
-    .then(response => response.json())
-    .then(data => {
-      const statusElement = document.getElementById('discord-status');
-      const nameElement = document.getElementById('discord-name');
+  <div class="container">
 
-      // Display the username and status
-      nameElement.textContent = data.data.discord_user.username;
-      statusElement.textContent = `Status: ${data.data.discord_status.charAt(0).toUpperCase() + data.data.discord_status.slice(1)}`;
-    })
-    .catch(error => {
-      console.error('Error fetching status:', error);
-      document.getElementById('discord-status').textContent = 'Error fetching status';
-    });
-</script>
+    <!-- Top Row: Profile Card -->
+    <div class="row">
+      <div class="card profile-card">
+        <img src="your-pfp.jpg" alt="Profile Picture">
+        <h2>Your Name</h2>
+        <p>Short bio about yourself. Web developer, designer, and tech enthusiast.</p>
+      </div>
+    </div>
+
+    <!-- Middle Row: Discord & Contact -->
+    <div class="row">
+      <div class="card">
+        <h2>Discord Presence</h2>
+        <p>Connected via Lanyard API:</p>
+        <div id="discord" class="discord-status">
+          <img src="" alt="Discord Avatar" id="discord-avatar">
+          <span id="discord-username">Loading...</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Contact Me</h2>
+        <p>Reach out via email or social media.</p>
+        <a href="mailto:your@email.com">Email Me</a>
+      </div>
+    </div>
+
+    <!-- Bottom Row: Work / Projects -->
+    <div class="row">
+      <div class="card">
+        <h2>Current Work</h2>
+        <p>Describe what you are currently working on.</p>
+      </div>
+      <div class="card">
+        <h2>Other Projects</h2>
+        <p>Describe another project or previous work.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Dark/Light Theme Toggle
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+    }
+
+    // Discord presence via Lanyard API
+    const discordId = "1437013692440121414";
+    fetch(`https://api.lanyard.rest/v1/users/${discordId}`)
+      .then(response => response.json())
+      .then(data => {
+        const user = data.data;
+        document.getElementById('discord-avatar').src = `https://cdn.discordapp.com/avatars/${discordId}/${user.discord_user.avatar}.png?size=128`;
+        document.getElementById('discord-username').textContent = `${user.discord_user.username}#${user.discord_user.discriminator}`;
+      })
+      .catch(err => {
+        console.error('Error fetching Discord info:', err);
+        document.getElementById('discord-username').textContent = 'Failed to load Discord info';
+      });
+  </script>
 
 </body>
 </html>
