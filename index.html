@@ -123,13 +123,17 @@
       align-items: center;
       gap: 10px;
       margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .discord-avatar-container {
+      position: relative;
     }
 
     .discord-status img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      position: relative;
     }
 
     .status-indicator {
@@ -142,8 +146,14 @@
       border: 2px solid white;
     }
 
-    .discord-status span {
-      font-weight: bold;
+    .activity {
+      margin-top: 10px;
+      font-style: italic;
+      color: #007bff;
+    }
+
+    .dark-theme .activity {
+      color: #66b0ff;
     }
 
     @media(max-width: 768px) {
@@ -174,12 +184,13 @@
         <h2>Discord Presence</h2>
         <p>Connected via Lanyard API:</p>
         <div id="discord" class="discord-status">
-          <div style="position: relative;">
+          <div class="discord-avatar-container">
             <img src="" alt="Discord Avatar" id="discord-avatar">
             <div class="status-indicator" id="discord-status"></div>
           </div>
           <span id="discord-username">Loading...</span>
         </div>
+        <div id="discord-activity" class="activity"></div>
       </div>
       <div class="card">
         <h2>Contact Me</h2>
@@ -207,7 +218,8 @@
       .then(response => response.json())
       .then(data => {
         const user = data.data;
-        document.getElementById('discord-avatar').src = `https://cdn.discordapp.com/avatars/${discordId}/${user.discord_user.avatar}.png?size=128`;
+        const avatarUrl = `https://cdn.discordapp.com/avatars/${discordId}/${user.discord_user.avatar}.png?size=128`;
+        document.getElementById('discord-avatar').src = avatarUrl;
         document.getElementById('discord-username').textContent = `${user.discord_user.username}#${user.discord_user.discriminator}`;
 
         // Status color
@@ -218,11 +230,25 @@
           case 'dnd': statusIndicator.style.backgroundColor = 'red'; break;
           default: statusIndicator.style.backgroundColor = 'gray'; break;
         }
+
+        // Show current activity if any
+        const activityDiv = document.getElementById('discord-activity');
+        if(user.activities && user.activities.length > 0) {
+          const mainActivity = user.activities.find(act => act.type !== 4); // ignore custom status
+          if(mainActivity) {
+            activityDiv.textContent = `Currently ${mainActivity.type === 0 ? 'Playing' : mainActivity.type === 2 ? 'Streaming' : 'Doing'} ${mainActivity.name}`;
+          } else {
+            activityDiv.textContent = '';
+          }
+        } else {
+          activityDiv.textContent = '';
+        }
       })
       .catch(err => {
         console.error('Error fetching Discord info:', err);
         document.getElementById('discord-username').textContent = 'Failed to load Discord info';
         document.getElementById('discord-status').style.backgroundColor = 'gray';
+        document.getElementById('discord-activity').textContent = '';
       });
 
     // Dynamic Projects with placeholders
