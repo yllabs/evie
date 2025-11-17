@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Evie | Developer</title>
+<title>Evie | Loading...</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -203,8 +203,11 @@ let typingDelay = 100;
 let erasingDelay = 50;
 let newWordDelay = 1500;
 
+let dynamicStatus = null; // Discord status from Lanyard
+
 function type() {
-    let text = `Evie | ${roles[currentRole]}`;
+    let word = dynamicStatus || roles[currentRole];
+    let text = `Evie | ${word}`;
     if(charIndex < text.length){
         usernameEl.textContent += text.charAt(charIndex);
         charIndex++;
@@ -220,14 +223,12 @@ function erase(){
         charIndex--;
         setTimeout(erase, erasingDelay);
     } else {
-        currentRole = (currentRole + 1) % roles.length;
+        if(!dynamicStatus){
+            currentRole = (currentRole + 1) % roles.length;
+        }
         setTimeout(type, typingDelay);
     }
 }
-
-document.addEventListener("DOMContentLoaded",()=>{
-    setTimeout(type,500);
-});
 
 // === Lanyard WebSocket ===
 const CONFIG = { discordUserId:"1437013692440121414" };
@@ -253,6 +254,7 @@ function connectLanyard(){
                     // Status colors
                     const statusColors = {online:"#43b581",idle:"#faa61a",dnd:"#f04747",offline:"#747f8d"};
                     statusEl.style.background = statusColors[data.discord_status]??statusColors.offline;
+                    dynamicStatus = data.discord_status.charAt(0).toUpperCase() + data.discord_status.slice(1); // capitalize
                     document.getElementById("loadingScreen").style.display="none"; // hide loading
                 }
                 break;
@@ -263,6 +265,11 @@ function connectLanyard(){
 }
 
 connectLanyard();
+
+// Start typing
+document.addEventListener("DOMContentLoaded",()=>{
+    setTimeout(type,500);
+});
 </script>
 
 </body>
