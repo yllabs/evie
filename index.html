@@ -1,278 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evie Presence</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>evie</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: url('https://cdn.discordapp.com/attachments/1435190777868324949/1436077761365278772/background_1079_687080c6b2e8b6.03818783.png?ex=691c22e3&is=691ad163&hm=35b7c1c381b9b21770d5976cbe3d222e38941170da10307b333eee7c9c93a408') no-repeat center center/cover;
+    overflow: hidden;
+  }
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+  #orbsContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top:0; left:0;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-    body {
-      font-family: 'Arial', sans-serif;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, var(--accent-1,#ff006e), var(--accent-2,#00f5ff), var(--accent-3,#ffd60a));
-      transition: background 0.5s ease;
-    }
+  #profile {
+    position: relative;
+    z-index: 2;
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    text-align: center;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
 
-    /* --------------------------
-       FLOATING PARTICLES (STYLE 1)
-    --------------------------- */
-    .particle {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.55);
-      filter: blur(3px);
-      animation: floatParticle 12s infinite ease-in-out;
-      opacity: 0.65;
-    }
+  #profile:hover {
+    box-shadow: 0 0 40px #ff00ff, 0 0 80px #00ffff, 0 0 120px #ffff00;
+  }
 
-    @keyframes floatParticle {
-      0%   { transform: translateY(0px) scale(1); opacity: 0.4; }
-      50%  { transform: translateY(-120px) scale(1.5); opacity: 0.8; }
-      100% { transform: translateY(0px) scale(1); opacity: 0.4; }
-    }
+  #avatar {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    margin-bottom: 15px;
+  }
 
-    /* --------------------------
-       MAIN GLASS WINDOW
-    --------------------------- */
-    #windowWrapper {
-      padding: 35px 45px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      animation: fadeIn 1.1s ease forwards, glassPulse 8s infinite ease-in-out;
-      transition: box-shadow 0.3s ease, border 0.3s ease;
-    }
+  #username { font-size: 28px; font-weight: bold; margin-bottom: 5px; }
+  #statusIndicator {
+    width: 16px; height:16px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: middle;
+    border: 2px solid #fff;
+    background: #43b581;
+  }
 
-    /* Neon RGB hover outline */
-    #windowWrapper:hover {
-      animation: rgbBorder 3s infinite linear;
-    }
+  #aboutMe {
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 1.4;
+    position: relative;
+    cursor: pointer;
+  }
 
-    @keyframes rgbBorder {
-      0%   { box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; }
-      25%  { box-shadow: 0 0 20px #00ffe5, 0 0 40px #00ffe5; }
-      50%  { box-shadow: 0 0 20px #26ff00, 0 0 40px #26ff00; }
-      75%  { box-shadow: 0 0 20px #c400ff, 0 0 40px #c400ff; }
-      100% { box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; }
-    }
+  #cycleText {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.94); }
-      to { opacity: 1; transform: scale(1); }
-    }
+  #aboutMe:hover #cycleText {
+    opacity: 0;
+  }
 
-    @keyframes glassPulse {
-      0% { background: rgba(255, 255, 255, 0.12); }
-      50% { background: rgba(255, 255, 255, 0.18); }
-      100% { background: rgba(255, 255, 255, 0.12); }
-    }
+  .social-link {
+    margin: 0 8px;
+    color: #fff;
+    font-size: 24px;
+    transition: all 0.2s ease;
+  }
 
-    /* --------------------------
-        PROFILE STYLE
-    --------------------------- */
-    #profile { text-align: center; color: #fff; }
+  .social-link:hover {
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 30px #ffff00;
+    transform: scale(1.2);
+  }
 
-    /* RGB breathing avatar ring */
-    #avatar {
-      width: 128px;
-      height: 128px;
-      border-radius: 50%;
-      padding: 4px;
-      animation: avatarRGB 4s infinite linear;
-    }
-
-    @keyframes avatarRGB {
-      0%   { box-shadow: 0 0 12px #ff0000; }
-      33%  { box-shadow: 0 0 12px #00ffea; }
-      66%  { box-shadow: 0 0 12px #2bff00; }
-      100% { box-shadow: 0 0 12px #ff0000; }
-    }
-
-    #statusIndicator {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-left: 8px;
-      border: 2px solid #fff;
-    }
-
-    /* --------------------------
-        ABOUT ME BOX
-    --------------------------- */
-    #aboutMeBox {
-      margin-top: 25px;
-      width: 100%;
-      padding: 15px;
-      background: rgba(255,255,255,0.12);
-      border-radius: 14px;
-      backdrop-filter: blur(10px);
-      color: #fff;
-      text-align: center;
-      line-height: 1.5em;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    #aboutTitle {
-      font-weight: bold;
-      font-size: 1.2em;
-      margin-bottom: 8px;
-    }
-
-    /* WORD CYCLING */
-    #cycleText {
-      font-size: 1.05em;
-      font-weight: 500;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-    }
-
-    /* Background */
-    .bg-image {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    .bg-image.loaded { opacity: 1; }
-  </style>
+</style>
 </head>
 <body>
+  <canvas id="orbsContainer"></canvas>
 
-  <!-- PARTICLES -->
-  <script>
-    for (let i = 0; i < 40; i++) {
-      const p = document.createElement("div");
-      p.className = "particle";
-      p.style.left = Math.random() * 100 + "vw";
-      p.style.top = Math.random() * 100 + "vh";
-      p.style.animationDuration = 10 + Math.random() * 10 + "s";
-      document.body.appendChild(p);
-    }
-  </script>
+  <div id="profile">
+    <img id="avatar" src="https://cdn.discordapp.com/avatars/1437013692440121414/8f3e1e4f0b6a94c2b7c9f0e2d67c4a26.png?size=256" alt="Avatar">
+    <div id="username">Evie</div>
+    <span id="statusIndicator"></span>
 
-  <!-- GLASS WINDOW -->
-  <div id="windowWrapper">
-    <div id="profile">
-      <img id="avatar" src="" alt="Avatar">
-      <h2 id="username">Loading...</h2>
-      <span id="statusIndicator"></span>
-      <div id="customStatus"></div>
-    </div>
-
-    <!-- ABOUT ME -->
-    <div id="aboutMeBox">
-      <div id="aboutTitle">About Me</div>
-      <div id="cycleText">evie</div>
+    <div id="aboutMe">
+      Hi! I'm Evie, a developer, designer, and all-around creator. I love music, gaming, and making cool projects!
+      <div id="cycleText"></div>
     </div>
   </div>
 
-  <script>
-    const CONFIG = {
-      discordUserId: "1437013692440121414",
-      backgroundImage: "https://cdn.discordapp.com/attachments/1435190777868324949/1436077761365278772/background_1079_687080c6b2e8b6.03818783.png?ex=691c22e3&is=691ad163&hm=35b7c1c381b9b21770d5976cbe3d222e38941170da10307b333eee7c9c93a408"
-    };
+<script>
+  // Tab title cycling
+  const tabWords = ["evie", "evie | developer", "evie | designer", "evie | artist", "evie | gamer", "evie | music lover", "evie | programmer"];
+  let tIndex = 0;
+  setInterval(()=> {
+    document.title = tabWords[tIndex];
+    tIndex = (tIndex+1)%tabWords.length;
+  },2000);
 
-    /* BACKGROUND */
-    const bg = document.createElement("div");
-    bg.className = "bg-image";
-    bg.style.backgroundImage = `url('${CONFIG.backgroundImage}')`;
-    document.body.appendChild(bg);
-    const img = new Image();
-    img.onload = () => bg.classList.add("loaded");
-    img.src = CONFIG.backgroundImage;
+  // About me role cycling
+  const roles = ["developer","designer","artist","creator","music lover","gamer","editor","programmer"];
+  let rIndex = 0;
+  const cycleText = document.getElementById("cycleText");
+  function cycleRoles(){
+    cycleText.textContent = roles[rIndex];
+    rIndex = (rIndex+1)%roles.length;
+  }
+  cycleRoles();
+  setInterval(cycleRoles,2000);
 
-    /* WORD CYCLE */
-    const cycleWords = [
-      "evie",
-      "evie | developer",
-      "evie | designer",
-      "evie | artist",
-      "evie | creator",
-      "evie | music lover",
-      "evie | gamer",
-      "evie | editor",
-      "evie | programmer"
-    ];
+  // Simple particle effect
+  const canvas = document.getElementById("orbsContainer");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-    let cIndex = 0;
-    function cycle() {
-      const el = document.getElementById("cycleText");
-      el.style.opacity = 0;
+  const particles = [];
+  for(let i=0;i<100;i++){
+    particles.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      radius: Math.random()*3+1,
+      dx: (Math.random()-0.5)*0.5,
+      dy: (Math.random()-0.5)*0.5
+    });
+  }
 
-      setTimeout(() => {
-        cIndex = (cIndex + 1) % cycleWords.length;
-        el.textContent = cycleWords[cIndex];
-        el.style.opacity = 1;
-      }, 450);
-    }
-    setInterval(cycle, 2500);
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+      ctx.fillStyle = "rgba(255,255,255,0.6)";
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = "#ff00ff";
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if(p.x<0||p.x>canvas.width) p.dx*=-1;
+      if(p.y<0||p.y>canvas.height) p.dy*=-1;
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
 
-    /* DISCORD WS */
-    function connectLanyard(){
-      const ws = new WebSocket("wss://api.lanyard.rest/socket");
-      let heartbeat;
-
-      ws.onmessage = async e => {
-        const p = JSON.parse(e.data);
-        if (p.op === 1) {
-          heartbeat = setInterval(() => ws.send(JSON.stringify({ op: 3 })), p.d.heartbeat_interval);
-          ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: CONFIG.discordUserId }}));
-        }
-
-        if (p.op === 0) {
-          const d = p.d;
-          const u = d.discord_user;
-          const s = d.discord_status;
-
-          document.getElementById("username").textContent = u.username;
-          document.getElementById("avatar").src =
-            `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`;
-
-          const colors = {
-            online:"#43b581",
-            idle:"#faa61a",
-            dnd:"#f04747",
-            offline:"#747f8d"
-          };
-
-          document.getElementById("statusIndicator").style.background =
-            colors[s] || colors.offline;
-
-          const custom = d.activities.find(a => a.type === 4);
-          document.getElementById("customStatus").textContent = custom?.state || "";
-        }
-      };
-
-      ws.onclose = () => {
-        clearInterval(heartbeat);
-        setTimeout(connectLanyard, 4000);
-      };
-    }
-
-    connectLanyard();
-  </script>
-
+  window.addEventListener("resize",()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
 </body>
 </html>
