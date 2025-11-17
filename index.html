@@ -3,230 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>evie</title>
+<title>Evie | Developer</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family: 'Arial', sans-serif;
     height: 100vh;
+    overflow: hidden;
+    background: url("https://cdn.discordapp.com/attachments/1435190777868324949/1436077761365278772/background_1079_687080c6b2e8b6.03818783.png?ex=691c22e3&is=691ad163&hm=35b7c1c381b9b21770d5976cbe3d222e38941170da10307b333eee7c9c93a408") no-repeat center center/cover;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('https://cdn.discordapp.com/attachments/1435190777868324949/1436077761365278772/background_1079_687080c6b2e8b6.03818783.png?ex=691c22e3&is=691ad163&hm=35b7c1c381b9b21770d5976cbe3d222e38941170da10307b333eee7c9c93a408') no-repeat center/cover;
-    overflow: hidden;
-  }
-
-  #loadingScreen {
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:2rem;
-    font-weight:bold;
-    background:linear-gradient(90deg,#ff0000,#ff7f00,#ffff00,#00ff00,#0000ff,#4b0082,#8f00ff);
-    background-size: 600% 600%;
-    animation: rainbow 3s linear infinite;
-    color:#fff;
-    z-index:9999;
-  }
-
-  @keyframes rainbow {
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
+    color: #fff;
   }
 
   #orbsContainer {
     position: absolute;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
     top:0; left:0;
     pointer-events: none;
-    z-index:1;
+    z-index: 1;
+    mix-blend-mode: screen;
   }
 
   #profile {
     position: relative;
-    z-index:2;
-    background: rgba(255,255,255,0.05);
-    border-radius: 20px;
-    padding: 30px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    z-index: 2;
     text-align: center;
-    color: #fff;
+    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 40px 30px;
+    width: 300px;
     transition: all 0.3s ease;
-  }
-
-  #profile:hover {
-    animation: neonGlow 2s infinite alternate;
   }
 
   #avatar {
-    width:128px; height:128px;
-    border-radius:50%;
-    border:3px solid #fff;
-    margin-bottom:15px;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-bottom: 15px;
   }
 
-  #username { font-size:28px; font-weight:bold; margin-bottom:5px; }
-  #statusIndicator {
-    width:16px; height:16px;
-    border-radius:50%;
-    display:inline-block;
-    margin-left:8px;
-    vertical-align:middle;
-    border:2px solid #fff;
-    background:#43b581;
+  #username {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
   }
 
   #aboutMe {
-    margin-top:20px;
-    font-size:16px;
-    line-height:1.4;
-    position: relative;
-    cursor:pointer;
-    transition: all 0.3s ease;
-  }
-
-  #cycleText {
-    margin-top:10px;
-    font-weight:bold;
-    font-size:18px;
-    color:#fff;
-    transition: all 0.3s ease;
-  }
-
-  #aboutMe:hover #cycleText { opacity:0; }
-
-  #aboutMe:hover {
-    animation: neonGlow 2s infinite alternate;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    transition: 0.3s ease;
+    cursor: pointer;
+    text-align: center;
     color: #fff;
   }
 
-  @keyframes neonGlow {
-    0%{text-shadow:0 0 5px #ff00ff,0 0 10px #ff00ff,0 0 15px #00ffff,0 0 20px #00ffff,0 0 25px #ffff00,0 0 30px #ffff00;}
-    25%{text-shadow:0 0 10px #ff7f00,0 0 20px #ff7f00,0 0 30px #00ff7f,0 0 40px #00ff7f,0 0 50px #7f00ff,0 0 60px #7f00ff;}
-    50%{text-shadow:0 0 15px #ff0000,0 0 25px #ff0000,0 0 35px #00ffff,0 0 45px #00ffff,0 0 55px #ffff00,0 0 65px #ffff00;}
-    75%{text-shadow:0 0 20px #ff00ff,0 0 30px #ff00ff,0 0 40px #00ffff,0 0 50px #00ffff,0 0 60px #ffff00,0 0 70px #ffff00;}
-    100%{text-shadow:0 0 25px #ff7f00,0 0 35px #ff7f00,0 0 45px #00ff7f,0 0 55px #00ff7f,0 0 65px #7f00ff,0 0 75px #7f00ff;}
+  #aboutMe:hover {
+    box-shadow: 0 0 20px 5px rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.6);
+    color: #fff;
   }
+
+  #aboutMeContent {
+    display: none;
+    font-size: 0.9em;
+    margin-top: 10px;
+    line-height: 1.4em;
+    color: #fff;
+  }
+
+  #aboutMe:hover #aboutMeContent {
+    display: block;
+  }
+
 </style>
 </head>
 <body>
-<div id="loadingScreen">Loading Evie...</div>
+
 <canvas id="orbsContainer"></canvas>
 
 <div id="profile">
-  <img id="avatar" src="https://cdn.discordapp.com/avatars/1437013692440121414/8f3e1e4f0b6a94c2b7c9f0e2d67c4a26.png?size=256" alt="Avatar">
-  <div id="username">Evie</div>
-  <span id="statusIndicator"></span>
+  <img id="avatar" src="https://cdn.discordapp.com/avatars/1437013692440121414/a_123456789abcdef.png?size=256" alt="Evie">
+  <h2 id="username">Evie | Developer</h2>
 
   <div id="aboutMe">
-    Hi! I'm Evie, a creator who loves making projects, music, and gaming!
-    <div id="cycleText"></div>
+    Hover to See About Me
+    <div id="aboutMeContent">
+      Hello! I'm Evie, a passionate developer, designer, and artist who loves creating music, games, and digital experiences.  
+    </div>
   </div>
 </div>
 
 <script>
-  // Hide loading screen after Lanyard connects
-  function hideLoadingScreen(){ 
-    document.getElementById("loadingScreen").style.transition="opacity 0.5s"; 
-    document.getElementById("loadingScreen").style.opacity=0;
-    setTimeout(()=>document.getElementById("loadingScreen").remove(),500);
-  }
+// Particle rainbow neon effect
+const canvas = document.getElementById("orbsContainer");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-  // Tab title cycling
-  const tabWords = ["evie","evie | developer","evie | designer","evie | artist","evie | gamer","evie | music lover","evie | programmer"];
-  let tIndex = 0;
-  setInterval(()=> { document.title = tabWords[tIndex]; tIndex = (tIndex+1)%tabWords.length; },2000);
+function hslToRgb(h,s,l){
+    let c=(1-Math.abs(2*l-1))*s;
+    let x=c*(1-Math.abs((h/60)%2-1));
+    let m=l-c/2;
+    let r=0,g=0,b=0;
+    if(h>=0 && h<60){r=c;g=x;b=0;}
+    else if(h>=60 && h<120){r=x;g=c;b=0;}
+    else if(h>=120 && h<180){r=0;g=c;b=x;}
+    else if(h>=180 && h<240){r=0;g=x;b=c;}
+    else if(h>=240 && h<300){r=x;g=0;b=c;}
+    else{r=c;g=0;b=x;}
+    r=Math.floor((r+m)*255);
+    g=Math.floor((g+m)*255);
+    b=Math.floor((b+m)*255);
+    return `rgba(${r},${g},${b},0.7)`;
+}
 
-  // About me role cycling
-  const roles = ["developer","designer","artist","creator","music lover","gamer","editor","programmer"];
-  let rIndex = 0;
-  const cycleText = document.getElementById("cycleText");
-  function cycleRoles(){ cycleText.textContent = roles[rIndex]; rIndex=(rIndex+1)%roles.length; }
-  cycleRoles();
-  setInterval(cycleRoles,2000);
+const particles=[];
+for(let i=0;i<120;i++){
+    particles.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        radius: Math.random()*3+1.5,
+        dx: (Math.random()-0.5)*0.5,
+        dy: (Math.random()-0.5)*0.5,
+        hue: Math.random()*360,
+        glowPhase: Math.random()*Math.PI*2
+    });
+}
 
-  // Particle effect
-  const canvas = document.getElementById("orbsContainer");
-  const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  const particles=[];
-  for(let i=0;i<100;i++){
-    particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*3+1,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5});
-  }
-
-  function animate(){
+function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     particles.forEach(p=>{
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
-      ctx.fillStyle="rgba(255,255,255,0.6)";
-      ctx.shadowBlur=10; ctx.shadowColor="#ff00ff"; ctx.fill();
-      p.x+=p.dx; p.y+=p.dy;
-      if(p.x<0||p.x>canvas.width) p.dx*=-1;
-      if(p.y<0||p.y>canvas.height) p.dy*=-1;
+        p.hue += 0.3;
+        if(p.hue>360) p.hue -= 360;
+
+        const color = hslToRgb(p.hue,0.8,0.5);
+        const glow = 15; // constant glow, no pulse
+
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+        ctx.fillStyle=color;
+        ctx.shadowBlur = glow;
+        ctx.shadowColor = color;
+        ctx.fill();
+
+        p.x += p.dx;
+        p.y += p.dy;
+        if(p.x<0||p.x>canvas.width)p.dx*=-1;
+        if(p.y<0||p.y>canvas.height)p.dy*=-1;
     });
     requestAnimationFrame(animate);
-  }
-  animate();
-  window.addEventListener("resize",()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+}
 
-  // Lanyard WebSocket for Discord Presence
-  function connectLanyard(){
-    const ws = new WebSocket("wss://api.lanyard.rest/socket");
-    let heartbeat;
+animate();
 
-    ws.onopen = ()=>console.log("Lanyard WS connected");
-
-    ws.onmessage = async msg=>{
-      const payload = JSON.parse(msg.data);
-      switch(payload.op){
-        case 1:
-          heartbeat = setInterval(()=> ws.send(JSON.stringify({op:3})), payload.d.heartbeat_interval);
-          ws.send(JSON.stringify({op:2,d:{subscribe_to_id:"1437013692440121414"}}));
-          break;
-        case 0:
-          if(payload.t==="INIT_STATE"||payload.t==="PRESENCE_UPDATE"){
-            const data = payload.d;
-            const u = data.discord_user;
-            const status = data.discord_status;
-            const activities = data.activities;
-
-            document.getElementById("avatar").src = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=256`;
-            document.getElementById("username").textContent = u.username;
-
-            const statusEl = document.getElementById("statusIndicator");
-            const statusColors={online:"#43b581",idle:"#faa61a",dnd:"#f04747",offline:"#747f8d"};
-            statusEl.style.background = statusColors[status]||statusColors.offline;
-
-            const customActivity = activities.find(a=>a.type===4);
-            if(customActivity){
-              document.getElementById("aboutMe").firstChild.textContent = customActivity.state + " ";
-            }
-
-            hideLoadingScreen(); // Hide loading once data received
-          }
-          break;
-      }
-    };
-
-    ws.onerror = err=>console.error("Lanyard WS error",err);
-    ws.onclose = ()=>{
-      console.log("WS closed — reconnecting in 5s");
-      clearInterval(heartbeat);
-      setTimeout(connectLanyard,5000);
-    };
-  }
-
-  connectLanyard();
+window.addEventListener("resize",()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
 </script>
+
 </body>
 </html>
